@@ -16,7 +16,7 @@ Based on Barry Grant's [workshop](https://bioboot.github.io/bggn213_F22/class-ma
 ## ATP1A1
 `20220917-ATP1A1-Mohammadi-and-Yang-2021-Curr-Biol.fasta`
 
-Alignment downloaded from the [DRYAD site](https://datadryad.org/stash/dataset/doi:10.5061/dryad.qfttdz0f7) for the following paper:
+Alignment downloaded from the [DRYAD site](https://datadryad.org/stash/downloads/file_stream/672545) for the following paper:
 
 Mohammadi, Shabnam, Lu Yang, Arbel Harpak, Santiago Herrera-Álvarez, María Del Pilar Rodríguez-Ordoñez, Julie Peng, Karen Zhang, et al. “Concerted Evolution Reveals Co-Adapted Amino Acid Substitutions in Na+K+-ATPase of Frogs That Prey on Toxic Toads.” Current Biology: CB 31, no. 12 (June 21, 2021): 2530-2538.e10. https://doi.org/10.1016/j.cub.2021.03.089.
 
