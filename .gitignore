@@ -1,3 +1,6 @@
+# Jalview backup files
+*.bak*
+
 # Mac specific
 .DS_Store
 
