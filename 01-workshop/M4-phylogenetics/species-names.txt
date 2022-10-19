@@ -1,4 +1,5 @@
 Mus musculus
 Homo sapiens
-Canis lupus familiaris
+Canis lupus
 Gallus gallus
+Rhinolophus sinicus
