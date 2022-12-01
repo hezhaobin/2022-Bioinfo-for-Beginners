@@ -1,3 +1,7 @@
+# PDB structures
+*.cif
+*.pdb
+
 # Jalview backup files
 *.bak*
 
