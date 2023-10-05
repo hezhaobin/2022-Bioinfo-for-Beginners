@@ -7,9 +7,8 @@ output: html_notebook
 
 reference: https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html
 
-install libraries
+## install libraries
 ```{r}
-
 installed_packages <- rownames(installed.packages())
 if(!require("tidyverse", quietly = TRUE))
   install.packages("tidyverse")
@@ -20,21 +19,84 @@ if (!require("BiocManager", quietly = TRUE))
 if (!require("DESeq2", quietly = TRUE))
   BiocManager::install("DESeq2", lib = .libPaths()[1])
 
+if (!require("pasilla", quietly = TRUE))
+  BiocManager::install("pasilla", lib = .libPaths()[1])
 # load libraries
 require(tidyverse)
-
-
+require(DESeq2)
+require(pasilla)
 ```
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
 
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+## Input count matrix
+Read count data from `pasilla` package
+```{r}
+library("pasilla")
+pasCts <- system.file("extdata",
+                      "pasilla_gene_counts.tsv",
+                      package="pasilla", mustWork=TRUE)
+pasAnno <- system.file("extdata",
+                       "pasilla_sample_annotation.csv",
+                       package="pasilla", mustWork=TRUE)
+cts <- as.matrix(read.csv(pasCts,sep="\t",row.names="gene_id"))
+coldata <- read.csv(pasAnno, row.names=1)
+coldata <- coldata[,c("condition","type")]
+coldata$condition <- factor(coldata$condition)
+coldata$type <- factor(coldata$type)
+```
+
+Rename and reorder the count matrix rows to be consistent with the `coldata`
+```{r}
+rownames(coldata) <- sub("fb", "", rownames(coldata))
+cts <- cts[, rownames(coldata)]
+all(rownames(coldata) %in% colnames(cts))
+all(rownames(coldata) == colnames(cts))
+```
+
+Construct a DESeqDataSet
+```{r}
+dds <- DESeqDataSetFromMatrix(countData = cts,
+                              colData = coldata,
+                              design = ~ condition)
+dds
+```
+
+## Pre-filtering and setting the reference level
+```{r}
+#keep <- rowSums(counts(dds)) >= 10
+#dds <- dds[keep,]
+#dds
+```
 
 ```{r}
-plot(cars)
+dds$condition <- relevel(dds$condition, ref = "untreated")
 ```
 
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+## Diifferential expression analysis
+```{r}
+dds <- DESeq(dds)
+res <- results(dds)
+res
+```
 
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+Compare the `DESeq2` in R results with the Galaxy results
+```{r}
+dat <- read_tsv("DESeq2-result-with-NA.txt", 
+                col_names = c("GeneID","Base mean","log2(FC)","StdErr","Wald-Stats","P-value","P-adj","Chromosome","Start","End","Strand","Feature","Gene name"), 
+                col_types = cols())
+dt1 <- tibble(GeneID = rownames(res), pval1 = res$pvalue, padj1 = res$padj)
+comp <- left_join(dt1, select(dat, GeneID, pval2 = `P-value`, padj2 = `P-adj`), by = "GeneID")
+comp
+```
 
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+```{r}
+comp %>% 
+  filter(!is.na(pval1), !is.na(pval2), pval1 != 0, pval2 != 0) %>% 
+  ggplot(aes(x = pval1, y = pval2)) + geom_point() + 
+  stat_smooth(method = "lm", formula = y~x)
+comp %>% 
+  filter(!is.na(padj1), !is.na(padj2), padj1 != 0, padj2 != 0) %>% 
+  ggplot(aes(x = padj1, y = padj2)) + geom_point() + 
+  stat_smooth(method = "lm", formula = y~x)
+
+```
+

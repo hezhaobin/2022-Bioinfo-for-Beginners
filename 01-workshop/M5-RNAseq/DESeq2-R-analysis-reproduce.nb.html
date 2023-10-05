@@ -1758,12 +1758,12 @@ Pasilla data</h1>
 
 <!-- rnb-text-begin -->
 <p>reference: <a href="https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html" class="uri">https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html</a></p>
-<p>install libraries</p>
+<div id="install-libraries" class="section level2">
+<h2>install libraries</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5pbnN0YWxsZWRfcGFja2FnZXMgPC0gcm93bmFtZXMoaW5zdGFsbGVkLnBhY2thZ2VzKCkpXG5pZighcmVxdWlyZShcInRpZHl2ZXJzZVwiLCBxdWlldGx5ID0gVFJVRSkpXG4gIGluc3RhbGwucGFja2FnZXMoXCJ0aWR5dmVyc2VcIilcblxuaWYgKCFyZXF1aXJlKFwiQmlvY01hbmFnZXJcIiwgcXVpZXRseSA9IFRSVUUpKVxuICBpbnN0YWxsLnBhY2thZ2VzKFwiQmlvY01hbmFnZXJcIilcblxuaWYgKCFyZXF1aXJlKFwiREVTZXEyXCIsIHF1aWV0bHkgPSBUUlVFKSlcbiAgQmlvY01hbmFnZXI6Omluc3RhbGwoXCJERVNlcTJcIiwgbGliID0gLmxpYlBhdGhzKClbMV0pXG5cbiMgbG9hZCBsaWJyYXJpZXNcbnJlcXVpcmUodGlkeXZlcnNlKVxuXG5cbmBgYCJ9 -->
-<pre class="r"><code>
-installed_packages &lt;- rownames(installed.packages())
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaW5zdGFsbGVkX3BhY2thZ2VzIDwtIHJvd25hbWVzKGluc3RhbGxlZC5wYWNrYWdlcygpKVxuaWYoIXJlcXVpcmUoXCJ0aWR5dmVyc2VcIiwgcXVpZXRseSA9IFRSVUUpKVxuICBpbnN0YWxsLnBhY2thZ2VzKFwidGlkeXZlcnNlXCIpXG5cbmlmICghcmVxdWlyZShcIkJpb2NNYW5hZ2VyXCIsIHF1aWV0bHkgPSBUUlVFKSlcbiAgaW5zdGFsbC5wYWNrYWdlcyhcIkJpb2NNYW5hZ2VyXCIpXG5cbmlmICghcmVxdWlyZShcIkRFU2VxMlwiLCBxdWlldGx5ID0gVFJVRSkpXG4gIEJpb2NNYW5hZ2VyOjppbnN0YWxsKFwiREVTZXEyXCIsIGxpYiA9IC5saWJQYXRocygpWzFdKVxuXG5pZiAoIXJlcXVpcmUoXCJwYXNpbGxhXCIsIHF1aWV0bHkgPSBUUlVFKSlcbiAgQmlvY01hbmFnZXI6Omluc3RhbGwoXCJwYXNpbGxhXCIsIGxpYiA9IC5saWJQYXRocygpWzFdKVxuIyBsb2FkIGxpYnJhcmllc1xucmVxdWlyZSh0aWR5dmVyc2UpXG5yZXF1aXJlKERFU2VxMilcbnJlcXVpcmUocGFzaWxsYSlcbmBgYCJ9 -->
+<pre class="r"><code>installed_packages &lt;- rownames(installed.packages())
 if(!require(&quot;tidyverse&quot;, quietly = TRUE))
   install.packages(&quot;tidyverse&quot;)
 
@@ -1773,37 +1773,124 @@ if (!require(&quot;BiocManager&quot;, quietly = TRUE))
 if (!require(&quot;DESeq2&quot;, quietly = TRUE))
   BiocManager::install(&quot;DESeq2&quot;, lib = .libPaths()[1])
 
+if (!require(&quot;pasilla&quot;, quietly = TRUE))
+  BiocManager::install(&quot;pasilla&quot;, lib = .libPaths()[1])
 # load libraries
 require(tidyverse)
+require(DESeq2)
+require(pasilla)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="input-count-matrix" class="section level2">
+<h2>Input count matrix</h2>
+<p>Read count data from <code>pasilla</code> package</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShcInBhc2lsbGFcIilcbnBhc0N0cyA8LSBzeXN0ZW0uZmlsZShcImV4dGRhdGFcIixcbiAgICAgICAgICAgICAgICAgICAgICBcInBhc2lsbGFfZ2VuZV9jb3VudHMudHN2XCIsXG4gICAgICAgICAgICAgICAgICAgICAgcGFja2FnZT1cInBhc2lsbGFcIiwgbXVzdFdvcms9VFJVRSlcbnBhc0Fubm8gPC0gc3lzdGVtLmZpbGUoXCJleHRkYXRhXCIsXG4gICAgICAgICAgICAgICAgICAgICAgIFwicGFzaWxsYV9zYW1wbGVfYW5ub3RhdGlvbi5jc3ZcIixcbiAgICAgICAgICAgICAgICAgICAgICAgcGFja2FnZT1cInBhc2lsbGFcIiwgbXVzdFdvcms9VFJVRSlcbmN0cyA8LSBhcy5tYXRyaXgocmVhZC5jc3YocGFzQ3RzLHNlcD1cIlxcdFwiLHJvdy5uYW1lcz1cImdlbmVfaWRcIikpXG5jb2xkYXRhIDwtIHJlYWQuY3N2KHBhc0Fubm8sIHJvdy5uYW1lcz0xKVxuY29sZGF0YSA8LSBjb2xkYXRhWyxjKFwiY29uZGl0aW9uXCIsXCJ0eXBlXCIpXVxuY29sZGF0YSRjb25kaXRpb24gPC0gZmFjdG9yKGNvbGRhdGEkY29uZGl0aW9uKVxuY29sZGF0YSR0eXBlIDwtIGZhY3Rvcihjb2xkYXRhJHR5cGUpXG5gYGAifQ== -->
+<pre class="r"><code>library(&quot;pasilla&quot;)
+pasCts &lt;- system.file(&quot;extdata&quot;,
+                      &quot;pasilla_gene_counts.tsv&quot;,
+                      package=&quot;pasilla&quot;, mustWork=TRUE)
+pasAnno &lt;- system.file(&quot;extdata&quot;,
+                       &quot;pasilla_sample_annotation.csv&quot;,
+                       package=&quot;pasilla&quot;, mustWork=TRUE)
+cts &lt;- as.matrix(read.csv(pasCts,sep=&quot;\t&quot;,row.names=&quot;gene_id&quot;))
+coldata &lt;- read.csv(pasAnno, row.names=1)
+coldata &lt;- coldata[,c(&quot;condition&quot;,&quot;type&quot;)]
+coldata$condition &lt;- factor(coldata$condition)
+coldata$type &lt;- factor(coldata$type)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Rename and reorder the count matrix rows to be consistent with the
+<code>coldata</code></p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucm93bmFtZXMoY29sZGF0YSkgPC0gc3ViKFwiZmJcIiwgXCJcIiwgcm93bmFtZXMoY29sZGF0YSkpXG5jdHMgPC0gY3RzWywgcm93bmFtZXMoY29sZGF0YSldXG5hbGwocm93bmFtZXMoY29sZGF0YSkgJWluJSBjb2xuYW1lcyhjdHMpKVxuYWxsKHJvd25hbWVzKGNvbGRhdGEpID09IGNvbG5hbWVzKGN0cykpXG5gYGAifQ== -->
+<pre class="r"><code>rownames(coldata) &lt;- sub(&quot;fb&quot;, &quot;&quot;, rownames(coldata))
+cts &lt;- cts[, rownames(coldata)]
+all(rownames(coldata) %in% colnames(cts))
+all(rownames(coldata) == colnames(cts))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Construct a DESeqDataSet</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGRzIDwtIERFU2VxRGF0YVNldEZyb21NYXRyaXgoY291bnREYXRhID0gY3RzLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29sRGF0YSA9IGNvbGRhdGEsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICBkZXNpZ24gPSB+IGNvbmRpdGlvbilcbmRkc1xuYGBgIn0= -->
+<pre class="r"><code>dds &lt;- DESeqDataSetFromMatrix(countData = cts,
+                              colData = coldata,
+                              design = ~ condition)
+dds</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="pre-filtering-and-setting-the-reference-level" class="section level2">
+<h2>Pre-filtering and setting the reference level</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI2tlZXAgPC0gcm93U3Vtcyhjb3VudHMoZGRzKSkgPj0gMTBcbiNkZHMgPC0gZGRzW2tlZXAsXVxuI2Rkc1xuYGBgIn0= -->
+<pre class="r"><code>#keep &lt;- rowSums(counts(dds)) &gt;= 10
+#dds &lt;- dds[keep,]
+#dds</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGRzJGNvbmRpdGlvbiA8LSByZWxldmVsKGRkcyRjb25kaXRpb24sIHJlZiA9IFwidW50cmVhdGVkXCIpXG5gYGAifQ== -->
+<pre class="r"><code>dds$condition &lt;- relevel(dds$condition, ref = &quot;untreated&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="diifferential-expression-analysis" class="section level2">
+<h2>Diifferential expression analysis</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGRzIDwtIERFU2VxKGRkcylcbnJlcyA8LSByZXN1bHRzKGRkcylcbnJlc1xuYGBgIn0= -->
+<pre class="r"><code>dds &lt;- DESeq(dds)
+res &lt;- results(dds)
+res</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Compare the <code>DESeq2</code> in R results with the Galaxy
+results</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGF0IDwtIHJlYWRfdHN2KFwiREVTZXEyLXJlc3VsdC13aXRoLU5BLnR4dFwiLCBcbiAgICAgICAgICAgICAgICBjb2xfbmFtZXMgPSBjKFwiR2VuZUlEXCIsXCJCYXNlIG1lYW5cIixcImxvZzIoRkMpXCIsXCJTdGRFcnJcIixcIldhbGQtU3RhdHNcIixcIlAtdmFsdWVcIixcIlAtYWRqXCIsXCJDaHJvbW9zb21lXCIsXCJTdGFydFwiLFwiRW5kXCIsXCJTdHJhbmRcIixcIkZlYXR1cmVcIixcIkdlbmUgbmFtZVwiKSwgXG4gICAgICAgICAgICAgICAgY29sX3R5cGVzID0gY29scygpKVxuZHQxIDwtIHRpYmJsZShHZW5lSUQgPSByb3duYW1lcyhyZXMpLCBwdmFsMSA9IHJlcyRwdmFsdWUsIHBhZGoxID0gcmVzJHBhZGopXG5jb21wIDwtIGxlZnRfam9pbihkdDEsIHNlbGVjdChkYXQsIEdlbmVJRCwgcHZhbDIgPSBgUC12YWx1ZWAsIHBhZGoyID0gYFAtYWRqYCksIGJ5ID0gXCJHZW5lSURcIilcbmNvbXBcbmBgYCJ9 -->
+<pre class="r"><code>dat &lt;- read_tsv(&quot;DESeq2-result-with-NA.txt&quot;, 
+                col_names = c(&quot;GeneID&quot;,&quot;Base mean&quot;,&quot;log2(FC)&quot;,&quot;StdErr&quot;,&quot;Wald-Stats&quot;,&quot;P-value&quot;,&quot;P-adj&quot;,&quot;Chromosome&quot;,&quot;Start&quot;,&quot;End&quot;,&quot;Strand&quot;,&quot;Feature&quot;,&quot;Gene name&quot;), 
+                col_types = cols())
+dt1 &lt;- tibble(GeneID = rownames(res), pval1 = res$pvalue, padj1 = res$padj)
+comp &lt;- left_join(dt1, select(dat, GeneID, pval2 = `P-value`, padj2 = `P-adj`), by = &quot;GeneID&quot;)
+comp</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29tcCAlPiUgXG4gIGZpbHRlcighaXMubmEocHZhbDEpLCAhaXMubmEocHZhbDIpLCBwdmFsMSAhPSAwLCBwdmFsMiAhPSAwKSAlPiUgXG4gIGdncGxvdChhZXMoeCA9IHB2YWwxLCB5ID0gcHZhbDIpKSArIGdlb21fcG9pbnQoKSArIFxuICBzdGF0X3Ntb290aChtZXRob2QgPSBcImxtXCIsIGZvcm11bGEgPSB5fngpXG5jb21wICU+JSBcbiAgZmlsdGVyKCFpcy5uYShwYWRqMSksICFpcy5uYShwYWRqMiksIHBhZGoxICE9IDAsIHBhZGoyICE9IDApICU+JSBcbiAgZ2dwbG90KGFlcyh4ID0gcGFkajEsIHkgPSBwYWRqMikpICsgZ2VvbV9wb2ludCgpICsgXG4gIHN0YXRfc21vb3RoKG1ldGhvZCA9IFwibG1cIiwgZm9ybXVsYSA9IHl+eClcblxuYGBgIn0= -->
+<pre class="r"><code>comp %&gt;% 
+  filter(!is.na(pval1), !is.na(pval2), pval1 != 0, pval2 != 0) %&gt;% 
+  ggplot(aes(x = pval1, y = pval2)) + geom_point() + 
+  stat_smooth(method = &quot;lm&quot;, formula = y~x)
+comp %&gt;% 
+  filter(!is.na(padj1), !is.na(padj2), padj1 != 0, padj2 != 0) %&gt;% 
+  ggplot(aes(x = padj1, y = padj2)) + geom_point() + 
+  stat_smooth(method = &quot;lm&quot;, formula = y~x)
 </code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>This is an <a href="http://rmarkdown.rstudio.com">R Markdown</a>
-Notebook. When you execute code within the notebook, the results appear
-beneath the code.</p>
-<p>Try executing this chunk by clicking the <em>Run</em> button within
-the chunk or by placing your cursor inside it and pressing
-<em>Ctrl+Shift+Enter</em>.</p>
 <!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGxvdChjYXJzKVxuYGBgIn0= -->
-<pre class="r"><code>plot(cars)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>Add a new chunk by clicking the <em>Insert Chunk</em> button on the
-toolbar or by pressing <em>Ctrl+Alt+I</em>.</p>
-<p>When you save the notebook, an HTML file containing the code and
-output will be saved alongside it (click the <em>Preview</em> button or
-press <em>Ctrl+Shift+K</em> to preview the HTML file).</p>
-<p>The preview shows you a rendered HTML copy of the contents of the
-editor. Consequently, unlike <em>Knit</em>, <em>Preview</em> does not
-run any R code chunks. Instead, the output of the chunk when it was last
-run in the editor is displayed.</p>
-<!-- rnb-text-end -->
+</div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiByZXByb2R1Y2UgdGhlIERFU2VxMiBhbmFseXNpcyBmb3IgdGhlIFBhc2lsbGEgZGF0YQphdXRob3I6IEJpbiBIZQpkYXRlOiAyMDIyLTExLTA1Cm91dHB1dDogaHRtbF9ub3RlYm9vawotLS0KCnJlZmVyZW5jZTogaHR0cHM6Ly9iaW9jb25kdWN0b3Iub3JnL3BhY2thZ2VzL3JlbGVhc2UvYmlvYy92aWduZXR0ZXMvREVTZXEyL2luc3QvZG9jL0RFU2VxMi5odG1sCgppbnN0YWxsIGxpYnJhcmllcwpgYGB7cn0KCmluc3RhbGxlZF9wYWNrYWdlcyA8LSByb3duYW1lcyhpbnN0YWxsZWQucGFja2FnZXMoKSkKaWYoIXJlcXVpcmUoInRpZHl2ZXJzZSIsIHF1aWV0bHkgPSBUUlVFKSkKICBpbnN0YWxsLnBhY2thZ2VzKCJ0aWR5dmVyc2UiKQoKaWYgKCFyZXF1aXJlKCJCaW9jTWFuYWdlciIsIHF1aWV0bHkgPSBUUlVFKSkKICBpbnN0YWxsLnBhY2thZ2VzKCJCaW9jTWFuYWdlciIpCgppZiAoIXJlcXVpcmUoIkRFU2VxMiIsIHF1aWV0bHkgPSBUUlVFKSkKICBCaW9jTWFuYWdlcjo6aW5zdGFsbCgiREVTZXEyIiwgbGliID0gLmxpYlBhdGhzKClbMV0pCgojIGxvYWQgbGlicmFyaWVzCnJlcXVpcmUodGlkeXZlcnNlKQoKCmBgYApUaGlzIGlzIGFuIFtSIE1hcmtkb3duXShodHRwOi8vcm1hcmtkb3duLnJzdHVkaW8uY29tKSBOb3RlYm9vay4gV2hlbiB5b3UgZXhlY3V0ZSBjb2RlIHdpdGhpbiB0aGUgbm90ZWJvb2ssIHRoZSByZXN1bHRzIGFwcGVhciBiZW5lYXRoIHRoZSBjb2RlLiAKClRyeSBleGVjdXRpbmcgdGhpcyBjaHVuayBieSBjbGlja2luZyB0aGUgKlJ1biogYnV0dG9uIHdpdGhpbiB0aGUgY2h1bmsgb3IgYnkgcGxhY2luZyB5b3VyIGN1cnNvciBpbnNpZGUgaXQgYW5kIHByZXNzaW5nICpDdHJsK1NoaWZ0K0VudGVyKi4gCgpgYGB7cn0KcGxvdChjYXJzKQpgYGAKCkFkZCBhIG5ldyBjaHVuayBieSBjbGlja2luZyB0aGUgKkluc2VydCBDaHVuayogYnV0dG9uIG9uIHRoZSB0b29sYmFyIG9yIGJ5IHByZXNzaW5nICpDdHJsK0FsdCtJKi4KCldoZW4geW91IHNhdmUgdGhlIG5vdGVib29rLCBhbiBIVE1MIGZpbGUgY29udGFpbmluZyB0aGUgY29kZSBhbmQgb3V0cHV0IHdpbGwgYmUgc2F2ZWQgYWxvbmdzaWRlIGl0IChjbGljayB0aGUgKlByZXZpZXcqIGJ1dHRvbiBvciBwcmVzcyAqQ3RybCtTaGlmdCtLKiB0byBwcmV2aWV3IHRoZSBIVE1MIGZpbGUpLgoKVGhlIHByZXZpZXcgc2hvd3MgeW91IGEgcmVuZGVyZWQgSFRNTCBjb3B5IG9mIHRoZSBjb250ZW50cyBvZiB0aGUgZWRpdG9yLiBDb25zZXF1ZW50bHksIHVubGlrZSAqS25pdCosICpQcmV2aWV3KiBkb2VzIG5vdCBydW4gYW55IFIgY29kZSBjaHVua3MuIEluc3RlYWQsIHRoZSBvdXRwdXQgb2YgdGhlIGNodW5rIHdoZW4gaXQgd2FzIGxhc3QgcnVuIGluIHRoZSBlZGl0b3IgaXMgZGlzcGxheWVkLgo=</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiByZXByb2R1Y2UgdGhlIERFU2VxMiBhbmFseXNpcyBmb3IgdGhlIFBhc2lsbGEgZGF0YQphdXRob3I6IEJpbiBIZQpkYXRlOiAyMDIyLTExLTA1Cm91dHB1dDogaHRtbF9ub3RlYm9vawotLS0KCnJlZmVyZW5jZTogaHR0cHM6Ly9iaW9jb25kdWN0b3Iub3JnL3BhY2thZ2VzL3JlbGVhc2UvYmlvYy92aWduZXR0ZXMvREVTZXEyL2luc3QvZG9jL0RFU2VxMi5odG1sCgojIyBpbnN0YWxsIGxpYnJhcmllcwpgYGB7cn0KaW5zdGFsbGVkX3BhY2thZ2VzIDwtIHJvd25hbWVzKGluc3RhbGxlZC5wYWNrYWdlcygpKQppZighcmVxdWlyZSgidGlkeXZlcnNlIiwgcXVpZXRseSA9IFRSVUUpKQogIGluc3RhbGwucGFja2FnZXMoInRpZHl2ZXJzZSIpCgppZiAoIXJlcXVpcmUoIkJpb2NNYW5hZ2VyIiwgcXVpZXRseSA9IFRSVUUpKQogIGluc3RhbGwucGFja2FnZXMoIkJpb2NNYW5hZ2VyIikKCmlmICghcmVxdWlyZSgiREVTZXEyIiwgcXVpZXRseSA9IFRSVUUpKQogIEJpb2NNYW5hZ2VyOjppbnN0YWxsKCJERVNlcTIiLCBsaWIgPSAubGliUGF0aHMoKVsxXSkKCmlmICghcmVxdWlyZSgicGFzaWxsYSIsIHF1aWV0bHkgPSBUUlVFKSkKICBCaW9jTWFuYWdlcjo6aW5zdGFsbCgicGFzaWxsYSIsIGxpYiA9IC5saWJQYXRocygpWzFdKQojIGxvYWQgbGlicmFyaWVzCnJlcXVpcmUodGlkeXZlcnNlKQpyZXF1aXJlKERFU2VxMikKcmVxdWlyZShwYXNpbGxhKQpgYGAKCiMjIElucHV0IGNvdW50IG1hdHJpeApSZWFkIGNvdW50IGRhdGEgZnJvbSBgcGFzaWxsYWAgcGFja2FnZQpgYGB7cn0KbGlicmFyeSgicGFzaWxsYSIpCnBhc0N0cyA8LSBzeXN0ZW0uZmlsZSgiZXh0ZGF0YSIsCiAgICAgICAgICAgICAgICAgICAgICAicGFzaWxsYV9nZW5lX2NvdW50cy50c3YiLAogICAgICAgICAgICAgICAgICAgICAgcGFja2FnZT0icGFzaWxsYSIsIG11c3RXb3JrPVRSVUUpCnBhc0Fubm8gPC0gc3lzdGVtLmZpbGUoImV4dGRhdGEiLAogICAgICAgICAgICAgICAgICAgICAgICJwYXNpbGxhX3NhbXBsZV9hbm5vdGF0aW9uLmNzdiIsCiAgICAgICAgICAgICAgICAgICAgICAgcGFja2FnZT0icGFzaWxsYSIsIG11c3RXb3JrPVRSVUUpCmN0cyA8LSBhcy5tYXRyaXgocmVhZC5jc3YocGFzQ3RzLHNlcD0iXHQiLHJvdy5uYW1lcz0iZ2VuZV9pZCIpKQpjb2xkYXRhIDwtIHJlYWQuY3N2KHBhc0Fubm8sIHJvdy5uYW1lcz0xKQpjb2xkYXRhIDwtIGNvbGRhdGFbLGMoImNvbmRpdGlvbiIsInR5cGUiKV0KY29sZGF0YSRjb25kaXRpb24gPC0gZmFjdG9yKGNvbGRhdGEkY29uZGl0aW9uKQpjb2xkYXRhJHR5cGUgPC0gZmFjdG9yKGNvbGRhdGEkdHlwZSkKYGBgCgpSZW5hbWUgYW5kIHJlb3JkZXIgdGhlIGNvdW50IG1hdHJpeCByb3dzIHRvIGJlIGNvbnNpc3RlbnQgd2l0aCB0aGUgYGNvbGRhdGFgCmBgYHtyfQpyb3duYW1lcyhjb2xkYXRhKSA8LSBzdWIoImZiIiwgIiIsIHJvd25hbWVzKGNvbGRhdGEpKQpjdHMgPC0gY3RzWywgcm93bmFtZXMoY29sZGF0YSldCmFsbChyb3duYW1lcyhjb2xkYXRhKSAlaW4lIGNvbG5hbWVzKGN0cykpCmFsbChyb3duYW1lcyhjb2xkYXRhKSA9PSBjb2xuYW1lcyhjdHMpKQpgYGAKCkNvbnN0cnVjdCBhIERFU2VxRGF0YVNldApgYGB7cn0KZGRzIDwtIERFU2VxRGF0YVNldEZyb21NYXRyaXgoY291bnREYXRhID0gY3RzLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb2xEYXRhID0gY29sZGF0YSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZGVzaWduID0gfiBjb25kaXRpb24pCmRkcwpgYGAKCiMjIFByZS1maWx0ZXJpbmcgYW5kIHNldHRpbmcgdGhlIHJlZmVyZW5jZSBsZXZlbApgYGB7cn0KI2tlZXAgPC0gcm93U3Vtcyhjb3VudHMoZGRzKSkgPj0gMTAKI2RkcyA8LSBkZHNba2VlcCxdCiNkZHMKYGBgCgpgYGB7cn0KZGRzJGNvbmRpdGlvbiA8LSByZWxldmVsKGRkcyRjb25kaXRpb24sIHJlZiA9ICJ1bnRyZWF0ZWQiKQpgYGAKCiMjIERpaWZmZXJlbnRpYWwgZXhwcmVzc2lvbiBhbmFseXNpcwpgYGB7cn0KZGRzIDwtIERFU2VxKGRkcykKcmVzIDwtIHJlc3VsdHMoZGRzKQpyZXMKYGBgCgpDb21wYXJlIHRoZSBgREVTZXEyYCBpbiBSIHJlc3VsdHMgd2l0aCB0aGUgR2FsYXh5IHJlc3VsdHMKYGBge3J9CmRhdCA8LSByZWFkX3RzdigiREVTZXEyLXJlc3VsdC13aXRoLU5BLnR4dCIsIAogICAgICAgICAgICAgICAgY29sX25hbWVzID0gYygiR2VuZUlEIiwiQmFzZSBtZWFuIiwibG9nMihGQykiLCJTdGRFcnIiLCJXYWxkLVN0YXRzIiwiUC12YWx1ZSIsIlAtYWRqIiwiQ2hyb21vc29tZSIsIlN0YXJ0IiwiRW5kIiwiU3RyYW5kIiwiRmVhdHVyZSIsIkdlbmUgbmFtZSIpLCAKICAgICAgICAgICAgICAgIGNvbF90eXBlcyA9IGNvbHMoKSkKZHQxIDwtIHRpYmJsZShHZW5lSUQgPSByb3duYW1lcyhyZXMpLCBwdmFsMSA9IHJlcyRwdmFsdWUsIHBhZGoxID0gcmVzJHBhZGopCmNvbXAgPC0gbGVmdF9qb2luKGR0MSwgc2VsZWN0KGRhdCwgR2VuZUlELCBwdmFsMiA9IGBQLXZhbHVlYCwgcGFkajIgPSBgUC1hZGpgKSwgYnkgPSAiR2VuZUlEIikKY29tcApgYGAKCmBgYHtyfQpjb21wICU+JSAKICBmaWx0ZXIoIWlzLm5hKHB2YWwxKSwgIWlzLm5hKHB2YWwyKSwgcHZhbDEgIT0gMCwgcHZhbDIgIT0gMCkgJT4lIAogIGdncGxvdChhZXMoeCA9IHB2YWwxLCB5ID0gcHZhbDIpKSArIGdlb21fcG9pbnQoKSArIAogIHN0YXRfc21vb3RoKG1ldGhvZCA9ICJsbSIsIGZvcm11bGEgPSB5fngpCmNvbXAgJT4lIAogIGZpbHRlcighaXMubmEocGFkajEpLCAhaXMubmEocGFkajIpLCBwYWRqMSAhPSAwLCBwYWRqMiAhPSAwKSAlPiUgCiAgZ2dwbG90KGFlcyh4ID0gcGFkajEsIHkgPSBwYWRqMikpICsgZ2VvbV9wb2ludCgpICsgCiAgc3RhdF9zbW9vdGgobWV0aG9kID0gImxtIiwgZm9ybXVsYSA9IHl+eCkKCmBgYAoK</div>
 
 
 
